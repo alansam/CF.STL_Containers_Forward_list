@@ -3,6 +3,9 @@
 //  CF.STL_Containers_Forward_list
 //
 //  Created by Alan Sampson on 3/24/21.
+//  MARK: - Reference.
+//  @see: https://en.cppreference.com/w/cpp/container
+//  @see: https://en.cppreference.com/w/cpp/container/forward_list
 //
 
 #include <iostream>
