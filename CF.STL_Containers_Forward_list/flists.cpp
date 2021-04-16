@@ -51,6 +51,7 @@ auto const dot = delimiter('.');
 
 //  MARK: - Function Prototype.
 auto C_forward_list(int argc, const char * argv[]) -> decltype(argc);
+auto C_forward_list_deduction_guides(int argc, const char * argv[]) -> decltype(argc);
 
 //  MARK: - Implementation.
 //  ....+....!....+....!....+....!....+....!....+....!....+....!....+....!....+....!
@@ -63,6 +64,7 @@ int main(int argc, const char * argv[]) {
 
   std::cout << '\n' << konst::dlm << std::endl;
   C_forward_list(argc, argv);
+  C_forward_list_deduction_guides(argc, argv);
 
   return 0;
 }
@@ -97,7 +99,7 @@ auto C_forward_list(int argc, const char * argv[]) -> decltype(argc) {
   /// Member functions
   // ....+....!....+....!....+....!....+....!....+....!....+....!
   std::cout << konst::dot << '\n';
-  std::cout << "std::C_forward_list - constructor"s << '\n';
+  std::cout << "std::forward_list - constructor"s << '\n';
   {
     using namespace cflc;
 
@@ -777,4 +779,48 @@ auto C_forward_list(int argc, const char * argv[]) -> decltype(argc) {
   std::cout << std::endl; //  make sure cout is flushed.
 
   return 0;
+}
+
+//  MARK: - C_forward_list
+//  ....+....!....+....!....+....!....+....!....+....!....+....!....+....!....+....!
+//  ================================================================================
+//  ....+....!....+....!....+....!....+....!....+....!....+....!....+....!....+....!
+/*
+ *  MARK: C_forward_list()
+ */
+auto C_forward_list_deduction_guides(int argc, const char * argv[]) -> decltype(argc) {
+  std::cout << "In "s << __func__ << std::endl;
+
+  /// Member functions
+  // ....+....!....+....!....+....!....+....!....+....!....+....!
+  std::cout << konst::dot << '\n';
+  std::cout << "std::forward_list - deduction guides"s << '\n';
+  {
+    std::vector<int> vec = { 1, 2, 3, 4, };
+
+    // uses explicit deduction guide to deduce std::forward_list<int>
+    std::forward_list xlst(vec.begin(), vec.end());
+    std::for_each(xlst.cbegin(), xlst.cend(), [](auto x_) {
+      std::cout << std::setw(4) << x_;
+    });
+    std::cout << '\n';
+
+    // deduces std::forward_list<std::vector<int>::iterator>
+    // first phase of overload resolution for list-initialization selects the candidate
+    // synthesized from the initializer-list constructor; second phase is not performed
+    // and deduction guide has no effect
+    std::forward_list ylst { vec.begin(), vec.end() };
+    auto i1 = ylst.front();
+    ylst.reverse();
+    auto i2 = ylst.front();
+    auto acc = std::accumulate(i1, i2, 0, std::plus<>());
+    std::cout << std::setw(4) << acc << '\n';
+
+    std::cout << '\n';
+  }
+
+  std::cout << std::endl; //  make sure cout is flushed.
+
+  return 0;
+
 }
